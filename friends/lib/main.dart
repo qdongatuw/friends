@@ -84,11 +84,12 @@ List<List<List<int>>> favorites = [];
     context: context,
     builder: (BuildContext context) {
       return Container(
-        height: 600, // 设置底部弹出面板的高度
+        height: 800, // 设置底部弹出面板的高度
         child:
-        Scrollbar(
-          thumbVisibility: true,
-          child: ListView.builder(
+        // Scrollbar
+        //   thumbVisibility: true,
+        //   child: 
+          ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: cc.length,
           padding: EdgeInsets.all(10),
@@ -98,14 +99,32 @@ List<List<List<int>>> favorites = [];
               margin: EdgeInsets.all(8),
               child: Column(
                 children: [
-                  Image.asset('lib/assets/1.jpg'),
+                  Stack(
+                   alignment: Alignment.bottomLeft, 
+                   children: [
+                    Image.asset('lib/assets/1.jpg'),
+                    Text('S${index+1}', style: GoogleFonts.lobster(fontSize: 36), )
+                   ],
+                  ),
+                  
                   SizedBox(height: 8),
-                  Text('test')
+                  Expanded(
+                  
+                  //height: 150, // Height of the vertical ListView
+                  child: ListView.builder(
+                    itemCount: cc[index].length, // Number of vertical items
+                    itemBuilder: (BuildContext context, int subIndex) {
+                      return ListTile(
+                        title: Text('Episode ${subIndex+1}', style: GoogleFonts.lobster(),), // Vertical item label
+                      );
+                    },
+                  ),
+                ),
                 ],
               ),
             );
           },
-        ),)
+        ),
          
       );
     },
