@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friends_cc.dart';
 
@@ -53,28 +52,31 @@ ScrollController _controller = ScrollController();
     });
   }
 
-  Future<void> _saveAppState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('darkTheme', darkTheme);
-    await prefs.setBool('showChinese', showChinese);
-    await prefs.setInt('season', season);
-    await prefs.setInt('episode', episode);
-    await prefs.setStringList('favorites', favorites);
-  }
-  
+  Future<void> _saveTheme() async{SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('darkTheme', darkTheme);}
+
+  Future<void> _saveShowChinese() async{SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showChinese', showChinese);}
+ 
+  Future<void> _saveEpisode() async{SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('season', season);
+    await prefs.setInt('episode', episode);}
+
+  Future<void> _saveFavorites() async{SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('favorites', favorites);}
 
   void toggleChinese(){
     setState(() {
       showChinese = !showChinese;
     });
-    _saveAppState();
+    _saveShowChinese();
   }
 
   void darkMode(){
     setState(() {
       darkTheme = !darkTheme;
     });
-    _saveAppState();
+    _saveTheme();
   }
   
 
@@ -82,14 +84,14 @@ ScrollController _controller = ScrollController();
     setState(() {
       favorites.add('$item1|$item2');
     });
-    _saveAppState();
+    _saveFavorites();
   }
 
   void removeFavorites(String? item1, String? item2) {
     setState(() {
       favorites.remove('$item1|$item1');
     });
-    _saveAppState();
+    _saveFavorites();
   }
 
 
@@ -98,7 +100,7 @@ ScrollController _controller = ScrollController();
     showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
-      return Container(
+      return favorites.isNotEmpty? Container(
         height: 1000, // 设置底部弹出面板的高度
         child: ListView.builder(
           
@@ -114,10 +116,7 @@ ScrollController _controller = ScrollController();
               favorites.removeAt(index);
             });
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Item Removed')),
-            );
-            _saveAppState();
+            _saveFavorites();
           },
           background: Container(
             color: Colors.red,
@@ -130,7 +129,7 @@ ScrollController _controller = ScrollController();
       },
     )
 
-    );
+    ): const Center(child: Text('Empty'),);
     });
     }
   
@@ -161,7 +160,7 @@ ScrollController _controller = ScrollController();
                    alignment: Alignment.bottomLeft, 
                    children: [
                     Image.asset('lib/assets/1.jpg'),
-                    Text('S${index+1}', style: GoogleFonts.lobster(fontSize: 36, color: Colors.amber), )
+                    Text('S${index+1}', style: const TextStyle(fontSize: 36, color: Colors.amber), )
                    ],
                   ),
                   
@@ -177,12 +176,12 @@ ScrollController _controller = ScrollController();
   ),
                     itemBuilder: (BuildContext context, int subIndex) {
                       return ListTile(
-                        title: Text('Episode ${subIndex+1}', style: GoogleFonts.lobster(),), // Vertical item label
+                        title: Text('Episode ${subIndex+1}', style: TextStyle(fontFamily: 'Comic sans'),), // Vertical item label
                         onTap: (){setState(() {
                           season = index;
                           episode = subIndex;
                         });
-                        _saveAppState();
+                        _saveEpisode();
                         },
                       );
                     },
@@ -210,7 +209,7 @@ ScrollController _controller = ScrollController();
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Season ${season+1} - Episode ${episode+1}', style: GoogleFonts.lobster(),),
+          title: Text('Season ${season+1} - Episode ${episode+1}',),
           actions: <Widget>[
             ToggleButtons(
               renderBorder: false,
@@ -245,7 +244,7 @@ ScrollController _controller = ScrollController();
             },
           ),
                     
-                    subtitle: showChinese? Text(cc[season][episode+1]?[index][0], style: GoogleFonts.lobster(),) : const Text(''),
+                    subtitle: showChinese? Text(cc[season][episode+1]?[index][0], ) : const Text(''),
                     index: index,
                     seasonIndex: season,
                     episodeIndex: episode,
@@ -278,7 +277,7 @@ ScrollController _controller = ScrollController();
               }
               episode--;
             });
-            _saveAppState();
+            _saveEpisode();
           },
           showChapters: showAll,
           showFavoriteItmes: showFavorite,
@@ -293,7 +292,7 @@ ScrollController _controller = ScrollController();
                       season++;
                     }
                   });
-                  _saveAppState();
+                  _saveEpisode();
                   },
 
         ),
