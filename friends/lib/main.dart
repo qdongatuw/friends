@@ -48,7 +48,7 @@ ScrollController _controller = ScrollController();
       episode = prefs.getInt('episode') ?? 0;
       offset = prefs.getDouble('offset') ?? 0.0;
       favorites = prefs.getStringList('favorites') ?? [];
-      _controller.jumpTo(offset);
+      _controller.jumpTo(offset?? 0.0);
     });
   }
 
@@ -230,6 +230,7 @@ ScrollController _controller = ScrollController();
           ],
           ),
         body: ListView.builder(
+          physics: BouncingScrollPhysics(),
           controller: _controller,
           itemCount: cc[season][episode]?.length,
           itemBuilder: (context, index){
