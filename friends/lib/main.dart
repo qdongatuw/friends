@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'tbbt.dart';
+import 'friends_cc.dart';
 
 
 /// Flutter code sample for [BottomAppBar].
@@ -344,10 +344,10 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                   child: 
                   Dismissible(
-                    key: Key(item[0]),
+                    key: Key(item[1]),
                     direction: DismissDirection.horizontal,
                     confirmDismiss: (direction) async {
-                      addToFavorites(item[0], item[1]);
+                      addToFavorites(item[1], item[0]);
                       return false;
                     },
                     // dismissThresholds: const {DismissDirection.endToStart: 0.5}
@@ -367,11 +367,11 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
                     ),
 
                     child:Card(child: ListTile(
-                      subtitle: showChinese? Text(item[1], style: const TextStyle(fontSize: 18),) : const Text(''),
+                      subtitle: showChinese? Text(item[0], style: const TextStyle(fontSize: 18),) : const Text(''),
                       title: SelectableText(
-                        item[0],
+                        item[1],
                         onSelectionChanged: (TextSelection selection, _) {
-                          String text = item[0].substring(selection.baseOffset ,selection.extentOffset);
+                          String text = item[1].substring(selection.baseOffset ,selection.extentOffset);
                           if(text.isNotEmpty){
                             fetchDictionary(context, text);
                           }
