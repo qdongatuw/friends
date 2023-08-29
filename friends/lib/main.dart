@@ -28,6 +28,7 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
   bool showChinese = true;
   int season = 0;
   int episode = 0;
+  int _index = 0;
   double offset = 0.0;
   List<String> favorites = [];
   Set<String> favoritesSet = {};
@@ -72,6 +73,7 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
     'SELECT phonetic, definition, translation FROM dictionary WHERE word = ?',
     [word],
   );
+
 
   await db.close();
 
@@ -178,6 +180,12 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
       });
   }
 
+  void removeSelection(){
+      setState(() {
+        _index++;
+      });
+    }
+  
   void showFavorite(BuildContext context){
     showModalBottomSheet<void>(
         isScrollControlled: true,
@@ -212,12 +220,14 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
                     child: Card(
                       child: ListTile(
                         title:SelectableText(
-                        group[0],
-                        onSelectionChanged: (TextSelection selection, _) {
-                          String text = group[0].substring(selection.baseOffset ,selection.extentOffset);
-                          if(text.isNotEmpty){
-                            fetchDictionary(context, text);
-                          }
+                          key: Key('selected_$_index'),
+                          group[0],
+                          onSelectionChanged: (TextSelection selection, _) {
+                            String text = group[0].substring(selection.baseOffset ,selection.extentOffset);
+                            if(text.isNotEmpty){
+                              fetchDictionary(context, text);
+                              removeSelection();
+                            }
                         },
                         style:  const TextStyle(fontFamily: 'Itim', fontSize: 20) 
                       ), 
@@ -369,11 +379,13 @@ class _BottomAppBarDemoState extends State<BottomAppBarDemo> {
                     child:Card(child: ListTile(
                       subtitle: showChinese? Text(item[0], style: const TextStyle(fontSize: 18),) : const Text(''),
                       title: SelectableText(
+                        key: Key('selected_main_$_index'),
                         item[1],
                         onSelectionChanged: (TextSelection selection, _) {
                           String text = item[1].substring(selection.baseOffset ,selection.extentOffset);
                           if(text.isNotEmpty){
                             fetchDictionary(context, text);
+                            removeSelection();
                           }
                         },
                         style:  const TextStyle(fontFamily: 'Itim', fontSize: 20) 
